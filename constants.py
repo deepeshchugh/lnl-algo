@@ -18,5 +18,11 @@ class _Const(object):
     def NEG():
         return "-"
     @constant
+    def DONT_CARE():
+        return "?"
+    @constant
     def LAMBDA():
         return "$lambda$"
+    @constant
+    def EMPTY():
+        return ""
