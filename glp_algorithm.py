@@ -4,11 +4,13 @@ Main points about glp algorithm:
 ->
 '''
 from constants import _Const
-from glp_utils import similar_row_exists
+from glp_utils import similar_row_exists, are_rows_similar, find_row_diff
 CONST = _Const()
 
 # dummy function TODO replace
 def mem_query(string):
+    if string == '':
+        return CONST.POS
     if string == '00':
         return CONST.POS
     if string == '01':
@@ -34,11 +36,20 @@ class ObsTable:
                 return False, prefix
         return True, ""
     
-
-
-    # Default behaviour for now
     def is_consistent(self):
-        return True
+        num_prefixes = len(self.prefix_set)
+        for i in range(num_prefixes):
+            prefix_1 = self.prefix_set[i]
+            for j in range(i+1, num_prefixes):
+                prefix_2 = self.prefix_set[j]
+                if are_rows_similar(self.main_table[prefix_1], self.main_table[prefix_2]):
+                    for letter in self.alphabet:
+                        different_suffix = find_row_diff(self.main_table[prefix_1 + letter], self.main_table[prefix_2 + letter])
+                        if different_suffix is None:
+                            continue
+                        else:
+                            return False, letter + different_suffix
+        return True, CONST.EMPTY
     
     # Needs to send inorder tuple list (prefix, membership)
     def gen_membership_queries(self):
@@ -84,7 +95,9 @@ class ObsTable:
     
 
 
-observation_table = ObsTable([CONST.EMPTY, '0'], [CONST.EMPTY], ['0', '1'])
+observation_table = ObsTable([CONST.EMPTY, '0', '1'], [CONST.EMPTY], ['0', '1'])
 observation_table.gen_new_table()
 observation_table.print_table()
+print()
 print(observation_table.is_closed())
+print(observation_table.is_consistent())
