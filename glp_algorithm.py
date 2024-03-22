@@ -77,6 +77,29 @@ class ObsTable:
             suffix_row[suffix] = mem_query(prefix + suffix)
         return suffix_row
 
+    def add_suffix(self, suffix):
+        if suffix in self.suffix_set:
+            #TODO add error here
+            print("suffix already exists in obs table")
+            return
+        self.suffix_set.append(suffix)
+        for prefix in self.main_table:
+            self.main_table[prefix][suffix] = mem_query(prefix + suffix)
+        for prefix in self.extended_table_component:
+            self.extended_table_component[prefix][suffix] = self.main_table[prefix][suffix]
+        
+    def add_prefix(self, prefix):
+        if prefix in self.prefix_set:
+            #TODO add error here
+            print("prefix already exists in obs table")
+            return
+        self.main_table[prefix] = self.gen_obs_table_row(prefix)
+        for letter in self.alphabet:
+            if (prefix + letter) not in self.prefix_set:
+                suffix_row = self.gen_obs_table_row(prefix + letter)
+                self.main_table[prefix + letter] = suffix_row
+                self.extended_table_component[prefix + letter] = suffix_row
+    
     # Print current observation table
     def print_table(self):
         print("\t", end='\'')
@@ -85,8 +108,8 @@ class ObsTable:
             print("\'" + key, end="\'")
             for suffix in self.suffix_set:
                 print("\t", end="")
-                print(self.main_table[key][suffix], end="\t")
-                print()
+                print(self.main_table[key][suffix], end="")
+            print()
     
 
 
@@ -101,3 +124,14 @@ observation_table.print_table()
 print()
 print(observation_table.is_closed())
 print(observation_table.is_consistent())
+observation_table.add_suffix('0')
+observation_table.print_table()
+print(observation_table.is_closed())
+print(observation_table.is_consistent())
+observation_table.add_suffix('1')
+observation_table.print_table()
+
+observation_table.add_prefix('00')
+observation_table.print_table()
+
+
