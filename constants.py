@@ -26,3 +26,6 @@ class _Const(object):
     @constant
     def EMPTY():
         return ""
+    @constant
+    def MAX_DFA_SIZE():
+        return 10

@@ -17,6 +17,34 @@ class GlpAlgorithm:
         self.obs_table = ObsTable(prefix_set, suffix_set, alphabet)
         self.obs_table.populate_tables()
 
+    def make_initial_conjecture(self):
+        is_closed, prefix_to_add = self.is_obs_table_closed()
+        is_consistent, suffix_to_add = self.is_obs_table_consistent()
+        while (not is_closed) or (not is_consistent):
+            if (not is_consistent):
+                self.obs_table.add_suffix(suffix_to_add)
+            elif (not is_closed):
+                self.obs_table.add_prefix(prefix_to_add)
+            is_closed, prefix_to_add = self.is_obs_table_closed()
+            is_consistent, suffix_to_add = self.is_obs_table_consistent()
+        self.obs_table.print_table()
+
+    def get_s_plus(self):
+        s_plus = set()
+        for prefix in self.obs_table.main_table:
+            for suffix in self.obs_table.suffix_set:
+                if self.obs_table.main_table[prefix][suffix] == CONST.POS:
+                    s_plus.add(prefix + suffix)
+        return s_plus
+
+    def get_s_minus(self):
+        s_minus = set()
+        for prefix in self.obs_table.main_table:
+            for suffix in self.obs_table.suffix_set:
+                if self.obs_table.main_table[prefix][suffix] == CONST.NEG:
+                    s_minus.add(prefix + suffix)
+        return s_minus
+
     '''
     The observation table is closed if: 
         for every node at the periphery (extended table nodes)
@@ -70,9 +98,6 @@ class GlpAlgorithm:
         return True, None
 
 
-    
-
-
 if __name__ == "__main__":
     glp_algorithm = GlpAlgorithm(
         prefix_set=[CONST.EMPTY, '0', '1'], 
@@ -85,14 +110,22 @@ if __name__ == "__main__":
     print("This is inconsistent because 0 and 1 are similar but 00 and 10 are not")
 
     glp_algorithm = GlpAlgorithm(
-        prefix_set=[CONST.EMPTY, '0', '1'], 
-        suffix_set=[CONST.EMPTY, '00', '1'], 
+        prefix_set=[CONST.EMPTY], 
+        suffix_set=[CONST.EMPTY], 
         alphabet=['0', '1'])
     print("Second GLP Algo Object initialized")
     glp_algorithm.obs_table.print_table()
     print(glp_algorithm.is_obs_table_closed())
     print(glp_algorithm.is_obs_table_consistent())
-    print("This is closed because of extended row 00 not having a match")
+    # Logic changed, proper things still pending
+    print("This is not closed because of extended row 00 not having a match")
+    print("Lets try fixing it")
+    glp_algorithm.make_initial_conjecture()
+    print(glp_algorithm.is_obs_table_closed())
+    print(glp_algorithm.is_obs_table_consistent())
+    print(glp_algorithm.obs_table.extended_table_component)
+    print(glp_algorithm.get_s_plus())
+    print(glp_algorithm.get_s_minus())
 
 
 
