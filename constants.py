@@ -29,3 +29,6 @@ class _Const(object):
     @constant
     def MAX_DFA_SIZE():
         return 10
+    @constant
+    def MAX_ITERATION_COUNT():
+        return 100

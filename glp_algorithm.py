@@ -13,9 +13,24 @@ class GlpAlgorithm:
     '''
     Initiates Algorithm object with observation table object in first step
     '''
-    def __init__(self, prefix_set, suffix_set, alphabet):
+    def __init__(self, alphabet, prefix_set=None, suffix_set=None):
+        if prefix_set is None:
+            prefix_set =  [CONST.EMPTY]
+        if suffix_set is None:
+            suffix_set = [CONST.EMPTY]
         self.obs_table = ObsTable(prefix_set, suffix_set, alphabet)
         self.obs_table.populate_tables()
+
+    def run(self):
+        isDFAFound = False
+        iterations = 0
+        while not isDFAFound and iterations < CONST.MAX_ITERATION_COUNT:
+            self.make_initial_conjecture()
+            dfa_found, proposed_dfa = self.find_solution(self.obs_table, 
+                    self.get_s_plus(), 
+                    self.get_s_minus())
+            # TODO add teacher functionality
+            # isDFACorrect, counter_example = 
 
     def make_initial_conjecture(self):
         is_closed, prefix_to_add = self.is_obs_table_closed()
@@ -99,33 +114,8 @@ class GlpAlgorithm:
 
 
 if __name__ == "__main__":
-    glp_algorithm = GlpAlgorithm(
-        prefix_set=[CONST.EMPTY, '0', '1'], 
-        suffix_set=[CONST.EMPTY], 
-        alphabet=['0', '1'])
-    print("First GLP Algo Object initialized")
-    glp_algorithm.obs_table.print_table()
-    print(glp_algorithm.is_obs_table_closed())
-    print(glp_algorithm.is_obs_table_consistent())
-    print("This is inconsistent because 0 and 1 are similar but 00 and 10 are not")
-
-    glp_algorithm = GlpAlgorithm(
-        prefix_set=[CONST.EMPTY], 
-        suffix_set=[CONST.EMPTY], 
-        alphabet=['0', '1'])
-    print("Second GLP Algo Object initialized")
-    glp_algorithm.obs_table.print_table()
-    print(glp_algorithm.is_obs_table_closed())
-    print(glp_algorithm.is_obs_table_consistent())
-    # Logic changed, proper things still pending
-    print("This is not closed because of extended row 00 not having a match")
-    print("Lets try fixing it")
-    glp_algorithm.make_initial_conjecture()
-    print(glp_algorithm.is_obs_table_closed())
-    print(glp_algorithm.is_obs_table_consistent())
-    print(glp_algorithm.obs_table.extended_table_component)
-    print(glp_algorithm.get_s_plus())
-    print(glp_algorithm.get_s_minus())
+    # No tests for now
+    print("Nothing to Report!")
 
 
 
