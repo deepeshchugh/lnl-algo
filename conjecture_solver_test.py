@@ -1,11 +1,12 @@
 from conjecture_solver import find_solution
 from constants import _Const
 from glp_algorithm import GlpAlgorithm
+from test_teacher import TestTeacher
 
 CONST = _Const()
 
 if __name__ == "__main__":
-    glp_algorithm = GlpAlgorithm(alphabet=['0', '1'])
+    glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=TestTeacher())
     print("GLP Algo Object initialized")
     glp_algorithm.obs_table.print_table()
     print(glp_algorithm.is_obs_table_closed())
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     print(glp_algorithm.obs_table.extended_table_component)
     print(glp_algorithm.get_s_plus())
     print(glp_algorithm.get_s_minus())
-    dfa_found, proposed_dfa = find_solution(glp_algorithm.obs_table, 
+    proposed_dfa = find_solution(glp_algorithm.obs_table, 
                     glp_algorithm.get_s_plus(), 
                     glp_algorithm.get_s_minus())
     proposed_dfa.print_parameters()

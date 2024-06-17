@@ -31,4 +31,4 @@ class _Const(object):
         return 10
     @constant
     def MAX_ITERATION_COUNT():
-        return 100
+        return 10000

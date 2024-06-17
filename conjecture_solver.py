@@ -28,7 +28,7 @@ def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set):
                         num_states=n)
         if foundDFA:
             print("Found at n = ", n)
-            return foundDFA, proposed_dfa
+            return proposed_dfa
         n+=1
     if n > CONST.MAX_DFA_SIZE:
         print("Error, not able to find DFA within given constraints")

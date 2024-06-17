@@ -1,5 +1,6 @@
 from constants import _Const
 from observation_table_utils import gen_obs_table_row
+from test_teacher import TestTeacher
 CONST = _Const()
 
 '''
@@ -17,7 +18,7 @@ class ObsTable:
     '''
     Initiates obs table object without populating main and extended tables.
     '''
-    def __init__(self, prefix_set, suffix_set, alphabet):
+    def __init__(self, prefix_set, suffix_set, alphabet, teacher):
         self.main_table = {}
         self.extended_table_component = {}
         if CONST.EMPTY not in prefix_set:
@@ -25,6 +26,7 @@ class ObsTable:
         self.prefix_set = prefix_set
         self.suffix_set = suffix_set
         self.alphabet = alphabet
+        self.teacher = teacher
 
     '''
     Populates main table and extended table component based on 
@@ -40,21 +42,22 @@ class ObsTable:
     def populate_base_table(self):
         for prefix in self.prefix_set:
             self.main_table[prefix] =\
-                gen_obs_table_row(prefix, self.suffix_set)
+                gen_obs_table_row(prefix, self.suffix_set, self.teacher)
 
     def populate_extended_table_component(self):
         for prefix in self.prefix_set:
             for letter in self.alphabet:
                 if (prefix + letter) not in self.prefix_set:
                     new_row = gen_obs_table_row(prefix + letter, 
-                                                self.suffix_set)
+                                                self.suffix_set,
+                                                self.teacher)
                     self.main_table[prefix + letter] = new_row
                     self.extended_table_component[prefix + letter] = new_row
 
     # Add prefix and regenerate the two tables.
     def add_prefix(self, prefix):
         if prefix in self.prefix_set:
-            #TODO add error here
+            #TODO add error here if required
             print("prefix already exists in obs table")
             return
         
@@ -93,7 +96,8 @@ if __name__ == "__main__":
     observation_table = ObsTable(
         prefix_set=[CONST.EMPTY, '0', '1'], 
         suffix_set=[CONST.EMPTY], 
-        alphabet=['0', '1'])
+        alphabet=['0', '1'],
+        teacher=TestTeacher())
     observation_table.populate_tables()
     observation_table.print_table()
     observation_table.add_prefix('00')

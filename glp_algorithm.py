@@ -6,6 +6,9 @@ Main points about glp algorithm:
 from constants import _Const
 from observation_table import ObsTable
 from glp_utils import similar_row_exists_in_main_table, are_rows_similar, find_row_diff
+from conjecture_solver import find_solution
+from teacher import Teacher
+from test_teacher import TestTeacher
 CONST = _Const()
 
 class GlpAlgorithm:
@@ -13,24 +16,39 @@ class GlpAlgorithm:
     '''
     Initiates Algorithm object with observation table object in first step
     '''
-    def __init__(self, alphabet, prefix_set=None, suffix_set=None):
+    def __init__(self, alphabet, teacher: Teacher, prefix_set=None, suffix_set=None):
         if prefix_set is None:
             prefix_set =  [CONST.EMPTY]
         if suffix_set is None:
             suffix_set = [CONST.EMPTY]
-        self.obs_table = ObsTable(prefix_set, suffix_set, alphabet)
+        self.teacher = teacher
+        self.obs_table = ObsTable(prefix_set, suffix_set, alphabet, teacher=teacher)
         self.obs_table.populate_tables()
 
     def run(self):
-        isDFAFound = False
         iterations = 0
-        while not isDFAFound and iterations < CONST.MAX_ITERATION_COUNT:
+        while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
-            dfa_found, proposed_dfa = self.find_solution(self.obs_table, 
+            proposed_dfa = find_solution(self.obs_table, 
                     self.get_s_plus(), 
                     self.get_s_minus())
+            is_correct, counter_example = self.teacher.equivalence_query(proposed_dfa)
+            if is_correct:
+                print("DFA Found and Validated Successfully!")
+                return
+            self.add_counter_example(counter_example)
+
+            iterations += 1
             # TODO add teacher functionality
             # isDFACorrect, counter_example = 
+        print("Tried so hard, and got so far, but in the end, it didnt even matter")
+
+    def add_counter_example(self, word):
+        word_array = [""]
+        for char in word:
+            word_array.append(char)
+            self.obs_table.add_prefix(''.join(word_array))
+
 
     def make_initial_conjecture(self):
         is_closed, prefix_to_add = self.is_obs_table_closed()
@@ -114,8 +132,8 @@ class GlpAlgorithm:
 
 
 if __name__ == "__main__":
-    # No tests for now
-    print("Nothing to Report!")
+    glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=TestTeacher())
+    glp_algorithm.run()
 
 
 
