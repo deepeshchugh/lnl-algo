@@ -7,7 +7,8 @@ find a solution using naive iteration
 
 from observation_table import ObsTable
 from constants import _Const
-from glp_algorithm import GlpAlgorithm
+from dfa import DFA
+
 from pycryptosat import Solver
 
 CONST = _Const()
@@ -22,12 +23,12 @@ TODO Make DFA Class and corresponding encoding conversion
 def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set):
     n = 1
     while n <= CONST.MAX_DFA_SIZE:
-        foundDFA, DFA = find_dfa_with_size(obsTable=obsTable, 
+        foundDFA, proposed_dfa = find_dfa_with_size(obsTable=obsTable, 
                         s_plus=s_plus, s_minus=s_minus, 
                         num_states=n)
         if foundDFA:
             print("Found at n = ", n)
-            return foundDFA, DFA
+            return foundDFA, proposed_dfa
         n+=1
     if n > CONST.MAX_DFA_SIZE:
         print("Error, not able to find DFA within given constraints")
@@ -104,32 +105,50 @@ def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states
     print(item_state_map)
     print(sat)
     print(solution)
-    
+    proposed_dfa = None
+    if sat:
+        proposed_dfa = generate_dfa(num_states, obsTable=obsTable, s_plus=s_plus,
+                 item_state_map=item_state_map, solution=solution)
     # TODO convert solution into "DFA" object which still needs to be defined
-    return sat, solution
+    return sat, proposed_dfa
     
+def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solution):
+    word_to_state_map = {}
+    state_to_word_map = {}
+    for i in range(1, num_states+1):
+        state_to_word_map[i] = []
 
-glp_algorithm = GlpAlgorithm(
-    prefix_set=[CONST.EMPTY], 
-    suffix_set=[CONST.EMPTY], 
-    alphabet=['0', '1'])
-print("Second GLP Algo Object initialized")
-glp_algorithm.obs_table.print_table()
-print(glp_algorithm.is_obs_table_closed())
-print(glp_algorithm.is_obs_table_consistent())
-# Logic changed, proper things still pending
-print("This is not closed because of extended row 00 not having a match")
-print("Lets try fixing it")
-glp_algorithm.make_initial_conjecture()
-print(glp_algorithm.is_obs_table_closed())
-print(glp_algorithm.is_obs_table_consistent())
-print(glp_algorithm.obs_table.extended_table_component)
-print(glp_algorithm.get_s_plus())
-print(glp_algorithm.get_s_minus())
-find_solution(glp_algorithm.obs_table, 
-                   glp_algorithm.get_s_plus(), 
-                   glp_algorithm.get_s_minus())
-    
+    for word in item_state_map:
+        for i in range(0, num_states):
+            if solution[item_state_map[word][i]]:
+                word_to_state_map[word] = i+1
+                state_to_word_map[i+1].append(word)
+
+    delta = {}
+    for i in range(1, num_states+1):
+        delta[i] = {}
+        # Todo add checks
+        for letter in obsTable.alphabet:
+            for word in state_to_word_map[i]:
+                if (word + letter) in word_to_state_map:
+                    delta[i][letter] = word_to_state_map[word + letter]
+                    break
+
+    final_states = set()
+    first_state = None
+    for i in range(1, num_states+1):
+        if state_to_word_map[i][0] in s_plus:
+            final_states.add(i)
+        if CONST.EMPTY in state_to_word_map[i]:
+            first_state = i
+
+    return DFA(
+        num_states=num_states,
+        alphabet=obsTable.alphabet,
+        delta=delta,
+        final_states=final_states,
+        first_state=first_state
+    )
 
 
 
