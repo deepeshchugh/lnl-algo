@@ -57,8 +57,6 @@ class ObsTable:
     # Add prefix and regenerate the two tables.
     def add_prefix(self, prefix):
         if prefix in self.prefix_set:
-            #TODO add error here if required
-            print("prefix already exists in obs table")
             return
         
         self.prefix_set.append(prefix)

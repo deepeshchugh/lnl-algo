@@ -40,16 +40,13 @@ o/p: foundDFA: boolean, DFA TODO
 Adds clauses according to the four constraints provided in glp sat based approach
 '''
 def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states):
-    total_words = len(s_minus) + len(s_plus)
     alphabet = obsTable.alphabet
 
     combined_words = set()
     for item in s_plus:
-        combined_words.add(item)
+        combined_words.update(get_prefix_set(item))
     for item in s_minus:
-        combined_words.add(item)
-    if total_words != len(combined_words):
-        print("These sets are supposed to be disjoint!! ERROR!")
+        combined_words.update(get_prefix_set(item))
     
     s = Solver()
 
@@ -84,14 +81,14 @@ def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states
             for letter in alphabet:
                 if item_1 + letter in combined_words:
                     if item_2 + letter in combined_words:
-                        for i in range(0, num_states-1):
-                            for j in range(0, num_states-1):
+                        for i in range(0, num_states):
+                            for j in range(0, num_states):
                                 s.add_clause([-1 * item_state_map[item_1][i], 
-                                              -1 * item_state_map[item_2][j], 
+                                              -1 * item_state_map[item_2][i], 
                                               -1 * item_state_map[item_1 + letter][j], 
                                               item_state_map[item_2 + letter][j]])
                                 s.add_clause([-1 * item_state_map[item_1][i], 
-                                              -1 * item_state_map[item_2][j], 
+                                              -1 * item_state_map[item_2][i], 
                                               item_state_map[item_1 + letter][j], 
                                               -1 * item_state_map[item_2 + letter][j]])
 
@@ -102,16 +99,13 @@ def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states
                 s.add_clause([-1 * item_state_map[item_1][i], -1 * item_state_map[item_2][i]])
     
     sat, solution = s.solve()
-    print(item_state_map)
-    print(sat)
-    print(solution)
     proposed_dfa = None
     if sat:
         proposed_dfa = generate_dfa(num_states, obsTable=obsTable, s_plus=s_plus,
                  item_state_map=item_state_map, solution=solution)
     # TODO convert solution into "DFA" object which still needs to be defined
     return sat, proposed_dfa
-    
+
 def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solution):
     word_to_state_map = {}
     state_to_word_map = {}
@@ -129,16 +123,24 @@ def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solutio
         delta[i] = {}
         # Todo add checks
         for letter in obsTable.alphabet:
+            transition_found = False
             for word in state_to_word_map[i]:
                 if (word + letter) in word_to_state_map:
                     delta[i][letter] = word_to_state_map[word + letter]
+                    transition_found = True
                     break
+            if not transition_found:
+                # Adding a self pointer for now, TODO check actual solution with prof
+                delta[i][letter] = i
+            
 
     final_states = set()
     first_state = None
     for i in range(1, num_states+1):
-        if state_to_word_map[i][0] in s_plus:
-            final_states.add(i)
+        for word in state_to_word_map[i]:
+            if word in s_plus:
+                final_states.add(i)
+                break
         if CONST.EMPTY in state_to_word_map[i]:
             first_state = i
 
@@ -150,6 +152,13 @@ def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solutio
         first_state=first_state
     )
 
+def get_prefix_set(word):
+        word_array = [""]
+        prefix_set = set([""])
+        for char in word:
+            word_array.append(char)
+            prefix_set.add(''.join(word_array))
+        return prefix_set
 
 
 

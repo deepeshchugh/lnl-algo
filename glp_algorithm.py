@@ -9,6 +9,7 @@ from glp_utils import similar_row_exists_in_main_table, are_rows_similar, find_r
 from conjecture_solver import find_solution
 from teacher import Teacher
 from test_teacher import TestTeacher
+from test_teacher_complex import ComplexTeacher
 CONST = _Const()
 
 class GlpAlgorithm:
@@ -35,6 +36,7 @@ class GlpAlgorithm:
             is_correct, counter_example = self.teacher.equivalence_query(proposed_dfa)
             if is_correct:
                 print("DFA Found and Validated Successfully!")
+                proposed_dfa.print_parameters()
                 return
             self.add_counter_example(counter_example)
 
@@ -60,6 +62,7 @@ class GlpAlgorithm:
                 self.obs_table.add_prefix(prefix_to_add)
             is_closed, prefix_to_add = self.is_obs_table_closed()
             is_consistent, suffix_to_add = self.is_obs_table_consistent()
+        print("conjecture:")
         self.obs_table.print_table()
 
     def get_s_plus(self):
@@ -132,7 +135,7 @@ class GlpAlgorithm:
 
 
 if __name__ == "__main__":
-    glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=TestTeacher())
+    glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
     glp_algorithm.run()
 
 
