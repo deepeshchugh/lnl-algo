@@ -1,7 +1,6 @@
 from constants import _Const
 from dfa import DFA
 from smarter_teacher import SmarterTeacher
-import random
 CONST = _Const()
 
 '''
