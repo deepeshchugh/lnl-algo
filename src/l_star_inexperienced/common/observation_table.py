@@ -1,6 +1,6 @@
-from constants import _Const
-from observation_table_utils import gen_obs_table_row
-from test_teacher import TestTeacher
+from .constants import _Const
+from .observation_table_utils import gen_obs_table_row
+from ..teachers.test_teacher import TestTeacher
 CONST = _Const()
 
 '''

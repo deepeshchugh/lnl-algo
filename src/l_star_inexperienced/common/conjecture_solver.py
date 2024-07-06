@@ -5,9 +5,9 @@ find a solution using naive iteration
 (ignoring binary search recommendation for now)
 '''
 
-from observation_table import ObsTable
-from constants import _Const
-from dfa import DFA
+from .observation_table import ObsTable
+from .constants import _Const
+from ..dfa.dfa import DFA
 
 from pycryptosat import Solver
 
@@ -103,7 +103,6 @@ def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states
     if sat:
         proposed_dfa = generate_dfa(num_states, obsTable=obsTable, s_plus=s_plus,
                  item_state_map=item_state_map, solution=solution)
-    # TODO convert solution into "DFA" object which still needs to be defined
     return sat, proposed_dfa
 
 def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solution):

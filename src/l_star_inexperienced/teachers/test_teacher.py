@@ -1,6 +1,6 @@
-from constants import _Const
-from dfa import DFA
-from teacher import Teacher
+from ..common.constants import _Const
+from ..dfa.dfa import DFA
+from .teacher import Teacher
 import random
 CONST = _Const()
 

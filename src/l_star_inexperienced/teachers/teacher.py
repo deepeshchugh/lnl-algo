@@ -1,5 +1,5 @@
-from constants import _Const
-from dfa import DFA
+from ..common.constants import _Const
+from ..dfa.dfa import DFA
 CONST = _Const()
 
 '''

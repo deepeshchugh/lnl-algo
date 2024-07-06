@@ -1,14 +1,16 @@
 
-from constants import _Const
-from observation_table import ObsTable
-from chen_utils import row_exists_in_main_table, are_rows_equal, find_row_diff, gen_3dfa
-from conjecture_solver import find_solution
-from smarter_teacher import SmarterTeacher
-from test_teacher import TestTeacher
-from complex_teacher_with_containment import ComplexTeacher
+from ..common.constants import _Const
+from ..common.observation_table import ObsTable
+from ..common.conjecture_solver import find_solution
+from ..teachers.smarter_teacher import SmarterTeacher
+from ..teachers.complex_teacher_with_containment import ComplexTeacher
+
+# Reusing chen utility functions
+from ..chen_et_al.chen_utils import row_exists_in_main_table, are_rows_equal, find_row_diff, gen_3dfa
+
 CONST = _Const()
 
-class ChenAlgorithm:
+class LNLAlgorithm:
     
     '''
     Initiates Algorithm object with observation table object in first step
@@ -33,11 +35,14 @@ class ChenAlgorithm:
             c_minus = tdfa.get_c_minus()
             counter_example = self.teacher.check_consistency(c_minus=c_minus, c_plus=c_plus)
             if counter_example is None:
-                proposed_dfa = find_solution(self.obs_table, 
+                
+                #Presuming minimally accepting dfa
+                is_correct, counter_example = self.teacher.equivalence_query(c_plus)
+
+                if is_correct:
+                    proposed_dfa = find_solution(self.obs_table, 
                     self.get_s_plus(), 
                     self.get_s_minus())
-                is_correct, counter_example = self.teacher.equivalence_query(proposed_dfa)
-                if is_correct:
                     print("DFA Found and Validated Successfully!")
                     proposed_dfa.print_parameters()
                     return
@@ -139,8 +144,8 @@ class ChenAlgorithm:
 
 
 if __name__ == "__main__":
-    chen_algorithm = ChenAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
-    chen_algorithm.run()
+    lnl_algorithm = LNLAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
+    lnl_algorithm.run()
 
 
 

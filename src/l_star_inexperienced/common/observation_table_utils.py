@@ -1,5 +1,5 @@
-from constants import _Const
-from teacher import Teacher
+from .constants import _Const
+from ..teachers.teacher import Teacher
 CONST = _Const()
 
 '''

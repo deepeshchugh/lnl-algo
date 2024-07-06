@@ -1,4 +1,4 @@
-from constants import _Const
+from ..common.constants import _Const
 CONST = _Const()
 
 

@@ -1,6 +1,6 @@
-from constants import _Const
-from dfa import DFA
-from smarter_teacher import SmarterTeacher
+from ..common.constants import _Const
+from ..dfa.dfa import DFA
+from ..teachers.smarter_teacher import SmarterTeacher
 CONST = _Const()
 
 '''

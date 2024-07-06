@@ -1,6 +1,6 @@
-from constants import _Const
-from observation_table import ObsTable
-from three_dfa import TDFA
+from ..common.constants import _Const
+from ..common.observation_table import ObsTable
+from ..dfa.three_dfa import TDFA
 CONST = _Const()
 
 

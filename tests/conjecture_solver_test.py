@@ -1,7 +1,7 @@
-from conjecture_solver import find_solution
-from constants import _Const
-from glp_algorithm import GlpAlgorithm
-from test_teacher import TestTeacher
+from l_star_inexperienced.common.conjecture_solver import find_solution # type: ignore
+from l_star_inexperienced.common.constants import _Const # type: ignore
+from l_star_inexperienced.grinchtein_et_al.glp_algorithm import GlpAlgorithm # type: ignore
+from l_star_inexperienced.teachers.test_teacher import TestTeacher # type: ignore
 
 CONST = _Const()
 
