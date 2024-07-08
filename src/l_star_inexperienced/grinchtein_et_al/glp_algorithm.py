@@ -7,6 +7,7 @@ from ..common.constants import _Const
 from ..common.observation_table import ObsTable
 from ..grinchtein_et_al.glp_utils import similar_row_exists_in_main_table, are_rows_similar, find_row_diff
 from ..common.conjecture_solver import find_solution
+# from ..common.alt_conjecture_solver import alt_find_solution as find_solution
 from ..teachers.teacher import Teacher
 from ..teachers.test_teacher import TestTeacher
 from ..teachers.test_teacher_complex import ComplexTeacher

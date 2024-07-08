@@ -1,7 +1,7 @@
 
 from ..common.constants import _Const
 from ..common.observation_table import ObsTable
-from ..common.conjecture_solver import find_solution
+from ..common.alt_conjecture_solver import alt_find_solution as find_solution
 from ..teachers.smarter_teacher import SmarterTeacher
 from ..teachers.complex_teacher_with_containment import ComplexTeacher
 
