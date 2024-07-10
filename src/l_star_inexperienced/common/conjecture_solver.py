@@ -20,9 +20,12 @@ i/p: Observation Table, S Plus Set, S Minus Set
 o/p: Minimal DFA Object matching constraint
 TODO Make DFA Class and corresponding encoding conversion
 '''
-def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set):
+def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None):
+    if max_dfa_size is None:
+        max_dfa_size = CONST.MAX_DFA_SIZE
+
     n = 1
-    while n <= CONST.MAX_DFA_SIZE:
+    while n <= max_dfa_size:
         print("n: ", n)
         foundDFA, proposed_dfa = find_dfa_with_size(obsTable=obsTable, 
                         s_plus=s_plus, s_minus=s_minus, 
@@ -33,6 +36,34 @@ def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set):
         n+=1
     if n > CONST.MAX_DFA_SIZE:
         print("Error, not able to find DFA within given constraints")
+
+def find_solution_binary_search(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None):
+    if max_dfa_size is None:
+        max_dfa_size = CONST.MAX_DFA_SIZE
+
+    low = 1
+    high = max_dfa_size
+    n = low + int((high - low)/2)
+    dfa_found = False
+    final_proposed_dfa = None
+    while low <= high:
+        print("n: ", n)
+        foundDFA, proposed_dfa = find_dfa_with_size(obsTable=obsTable, 
+                        s_plus=s_plus, s_minus=s_minus, 
+                        num_states=n)
+        if foundDFA:
+            print("Found at n = ", n)
+            dfa_found = True
+            final_proposed_dfa = proposed_dfa
+            high = n-1
+        else:
+            low = n+1
+        n = low + int((high - low)/2)
+    
+    if dfa_found:
+        return final_proposed_dfa
+    return None
+
 
 '''
 One iteration of sat solver

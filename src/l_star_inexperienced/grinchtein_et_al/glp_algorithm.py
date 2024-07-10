@@ -7,6 +7,7 @@ from ..common.constants import _Const
 from ..common.observation_table import ObsTable
 from ..grinchtein_et_al.glp_utils import similar_row_exists_in_main_table, are_rows_similar, find_row_diff
 from ..common.conjecture_solver import find_solution
+# from ..common.conjecture_solver import find_solution_binary_search as find_solution
 # from ..common.alt_conjecture_solver import alt_find_solution as find_solution
 from ..teachers.teacher import Teacher
 from ..teachers.test_teacher import TestTeacher
@@ -27,24 +28,25 @@ class GlpAlgorithm:
         self.obs_table = ObsTable(prefix_set, suffix_set, alphabet, teacher=teacher)
         self.obs_table.populate_tables()
 
-    def run(self):
+    def run(self, max_dfa_size=None):
         iterations = 0
         while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
             proposed_dfa = find_solution(self.obs_table, 
                     self.get_s_plus(), 
-                    self.get_s_minus())
+                    self.get_s_minus(),
+                    max_dfa_size=max_dfa_size)
             is_correct, counter_example = self.teacher.equivalence_query(proposed_dfa)
             if is_correct:
                 print("DFA Found and Validated Successfully!")
-                proposed_dfa.print_parameters()
-                return
+                return proposed_dfa
             self.add_counter_example(counter_example)
 
             iterations += 1
             # TODO add teacher functionality
             # isDFACorrect, counter_example = 
         print("Tried so hard, and got so far, but in the end, it didnt even matter")
+        return None
 
     def add_counter_example(self, word):
         word_array = [""]
@@ -137,7 +139,7 @@ class GlpAlgorithm:
 
 if __name__ == "__main__":
     glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
-    glp_algorithm.run()
-
+    result = glp_algorithm.run()
+    result.print_parameters()
 
 

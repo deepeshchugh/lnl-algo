@@ -32,7 +32,7 @@ class TestTeacher(Teacher):
     
     def find_counterexample(self, proposed_dfa: DFA):
         itr = 0
-        while itr < CONST.MAX_ITERATION_COUNT:
+        while itr < CONST.MAX_COUNTEREXAMPLE_ATTEMPT:
             random_word = self.get_random_word()
             if proposed_dfa.is_word_accepted(random_word) != \
                 self.is_valid(random_word):
