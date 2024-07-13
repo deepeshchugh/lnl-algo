@@ -1,3 +1,5 @@
+from visual_automata.fa.dfa import VisualDFA
+
 class DFA:
     
     '''
@@ -31,3 +33,31 @@ class DFA:
     
     def is_state_final(self, state):
         return (state in self.final_states)
+    
+    def visualize(self):
+        state_to_viz_map = {}
+        states = []
+        transitions = {}
+        for state in range(1, self.num_states + 1):
+            state_to_viz_map[state] = 'q' + str(state)
+            states.append(state_to_viz_map[state])
+        
+        for state in range(1, self.num_states + 1):
+            transitions[state_to_viz_map[state]] = {}
+            for letter in self.alphabet:
+                transitions[state_to_viz_map[state]][letter] = state_to_viz_map[self.delta[state][letter]]
+
+        initial_state = state_to_viz_map[self.first_state]
+        final_states = []
+        for final_state in self.final_states:
+            final_states.append(state_to_viz_map[final_state])
+        
+        visual_dfa = VisualDFA(
+        states=set(states),
+        input_symbols=set(self.alphabet),
+        transitions=transitions,
+        initial_state=initial_state,
+        final_states=set(final_states),
+        )
+
+        visual_dfa.show_diagram(view=True)

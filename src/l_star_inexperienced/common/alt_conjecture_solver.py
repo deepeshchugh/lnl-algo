@@ -20,20 +20,28 @@ i/p: Observation Table, S Plus Set, S Minus Set
 o/p: Minimal DFA Object matching constraint
 TODO Make DFA Class and corresponding encoding conversion
 '''
-def alt_find_solution(obsTable: ObsTable, s_plus: set, s_minus: set):
+def alt_find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None, show_logs = False):
+    if max_dfa_size is None:
+        max_dfa_size = CONST.MAX_DFA_SIZE
+
     n = 1
+    
     print("In alternate solver!")
-    while n <= CONST.MAX_DFA_SIZE:
-        print("n: ", n)
+    while n <= max_dfa_size:
+        if show_logs:
+            print("n: ", n)
         foundDFA, proposed_dfa = alt_find_dfa_with_size(obsTable=obsTable, 
                         s_plus=s_plus, s_minus=s_minus, 
                         num_states=n)
         if foundDFA:
-            print("Found at n = ", n)
+            if show_logs:
+                print("Found at n = ", n)
             return proposed_dfa
         n+=1
-    if n > CONST.MAX_DFA_SIZE:
-        print("Error, not able to find DFA within given constraints")
+    if n > max_dfa_size:
+        if show_logs:
+            print("Error, not able to find DFA within given constraints")
+        return None
 
 '''
 One iteration of sat solver
@@ -110,7 +118,6 @@ def alt_find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_st
                 converted_solution.append(True)
             else:
                 converted_solution.append(False)
-        print("Generating dfa")
         proposed_dfa = alt_generate_dfa(num_states, obsTable=obsTable, s_plus=s_plus,
                  item_state_map=item_state_map, solution=tuple(converted_solution))
         solution_found = True

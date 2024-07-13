@@ -43,8 +43,6 @@ class GlpAlgorithm:
             self.add_counter_example(counter_example)
 
             iterations += 1
-            # TODO add teacher functionality
-            # isDFACorrect, counter_example = 
         print("Tried so hard, and got so far, but in the end, it didnt even matter")
         return None
 

@@ -1,7 +1,9 @@
 
+from ..dfa.dfa import DFA
 from ..common.constants import _Const
 from ..common.observation_table import ObsTable
-from ..common.alt_conjecture_solver import alt_find_solution as find_solution
+from ..common.conjecture_solver import find_solution
+# from ..common.alt_conjecture_solver import alt_find_solution as find_solution
 from ..teachers.smarter_teacher import SmarterTeacher
 from ..teachers.complex_teacher_with_containment import ComplexTeacher
 
@@ -24,7 +26,7 @@ class LNLAlgorithm:
         self.obs_table = ObsTable(prefix_set, suffix_set, alphabet, teacher=teacher)
         self.obs_table.populate_tables()
 
-    def run(self):
+    def run(self) -> DFA:
         iterations = 0
         while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
@@ -44,15 +46,16 @@ class LNLAlgorithm:
                     self.get_s_plus(), 
                     self.get_s_minus())
                     print("DFA Found and Validated Successfully!")
-                    proposed_dfa.print_parameters()
-                    return
+                    return proposed_dfa
+                    # proposed_dfa.print_parameters()
                 self.add_counter_example(counter_example)
             else:
                 self.add_counter_example(counter_example)
 
             iterations += 1
         print("Tried so hard, and got so far, but in the end, it didnt even matter")
-
+        return None
+    
     def add_counter_example(self, word):
         word_array = [""]
         for char in word:
@@ -145,7 +148,9 @@ class LNLAlgorithm:
 
 if __name__ == "__main__":
     lnl_algorithm = LNLAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
-    lnl_algorithm.run()
+    solution_dfa = lnl_algorithm.run()
+    solution_dfa.print_parameters()
+    solution_dfa.visualize()
 
 
 

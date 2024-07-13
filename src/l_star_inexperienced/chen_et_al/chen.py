@@ -4,7 +4,6 @@ from ..common.observation_table import ObsTable
 from ..common.conjecture_solver import find_solution
 from .chen_utils import row_exists_in_main_table, are_rows_equal, find_row_diff, gen_3dfa
 from ..teachers.smarter_teacher import SmarterTeacher
-from ..teachers.test_teacher import TestTeacher
 from ..teachers.complex_teacher_with_containment import ComplexTeacher
 CONST = _Const()
 

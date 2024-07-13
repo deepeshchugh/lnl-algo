@@ -20,24 +20,28 @@ i/p: Observation Table, S Plus Set, S Minus Set
 o/p: Minimal DFA Object matching constraint
 TODO Make DFA Class and corresponding encoding conversion
 '''
-def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None):
+def find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None, show_logs = False):
     if max_dfa_size is None:
         max_dfa_size = CONST.MAX_DFA_SIZE
 
     n = 1
     while n <= max_dfa_size:
-        print("n: ", n)
+        if show_logs:
+            print("n: ", n)
         foundDFA, proposed_dfa = find_dfa_with_size(obsTable=obsTable, 
                         s_plus=s_plus, s_minus=s_minus, 
                         num_states=n)
         if foundDFA:
-            print("Found at n = ", n)
+            if show_logs:
+                print("Found at n = ", n)
             return proposed_dfa
         n+=1
     if n > CONST.MAX_DFA_SIZE:
-        print("Error, not able to find DFA within given constraints")
+        if show_logs:
+            print("Error, not able to find DFA within given constraints")
+        return None
 
-def find_solution_binary_search(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None):
+def find_solution_binary_search(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None, show_logs = False):
     if max_dfa_size is None:
         max_dfa_size = CONST.MAX_DFA_SIZE
 
@@ -47,12 +51,14 @@ def find_solution_binary_search(obsTable: ObsTable, s_plus: set, s_minus: set, m
     dfa_found = False
     final_proposed_dfa = None
     while low <= high:
-        print("n: ", n)
+        if show_logs:
+            print("n: ", n)
         foundDFA, proposed_dfa = find_dfa_with_size(obsTable=obsTable, 
                         s_plus=s_plus, s_minus=s_minus, 
                         num_states=n)
         if foundDFA:
-            print("Found at n = ", n)
+            if show_logs:
+                print("Found at n = ", n)
             dfa_found = True
             final_proposed_dfa = proposed_dfa
             high = n-1
@@ -62,6 +68,8 @@ def find_solution_binary_search(obsTable: ObsTable, s_plus: set, s_minus: set, m
     
     if dfa_found:
         return final_proposed_dfa
+    if show_logs:
+        "DFA Not found"
     return None
 
 
@@ -133,7 +141,6 @@ def find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states
     sat, solution = s.solve()
     proposed_dfa = None
     if sat:
-        print("Generating dfa")
         proposed_dfa = generate_dfa(num_states, obsTable=obsTable, s_plus=s_plus,
                  item_state_map=item_state_map, solution=solution)
     return sat, proposed_dfa
