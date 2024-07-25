@@ -20,7 +20,7 @@ if __name__ == "__main__":
     print(glp_algorithm.obs_table.extended_table_component)
     print(glp_algorithm.get_s_plus())
     print(glp_algorithm.get_s_minus())
-    proposed_dfa = find_solution(glp_algorithm.obs_table, 
+    proposed_dfa , _ = find_solution(glp_algorithm.obs_table, 
                     glp_algorithm.get_s_plus(), 
                     glp_algorithm.get_s_minus())
     proposed_dfa.print_parameters()

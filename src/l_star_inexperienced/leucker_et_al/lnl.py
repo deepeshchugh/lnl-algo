@@ -1,10 +1,9 @@
 
+from ..algorithm import Algorithm
 from ..dfa.dfa import DFA
 from ..common.constants import _Const
-from ..common.observation_table import ObsTable
 from ..common.conjecture_solver import find_solution
 # from ..common.alt_conjecture_solver import alt_find_solution as find_solution
-from ..teachers.smarter_teacher import SmarterTeacher
 from ..teachers.complex_teacher_with_containment import ComplexTeacher
 
 # Reusing chen utility functions
@@ -12,22 +11,15 @@ from ..chen_et_al.chen_utils import row_exists_in_main_table, are_rows_equal, fi
 
 CONST = _Const()
 
-class LNLAlgorithm:
-    
-    '''
-    Initiates Algorithm object with observation table object in first step
-    '''
-    def __init__(self, alphabet, teacher: SmarterTeacher, prefix_set=None, suffix_set=None):
-        if prefix_set is None:
-            prefix_set =  [CONST.EMPTY]
-        if suffix_set is None:
-            suffix_set = [CONST.EMPTY]
-        self.teacher = teacher
-        self.obs_table = ObsTable(prefix_set, suffix_set, alphabet, teacher=teacher)
-        self.obs_table.populate_tables()
+class LNLAlgorithm(Algorithm):
 
-    def run(self) -> DFA:
+    def run(self, max_dfa_size=None, show_logs=False) -> DFA:
         iterations = 0
+
+        self.total_conjectures = 0
+        self.total_clauses = 0
+        self.max_clauses = 0
+
         while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
             tdfa = gen_3dfa(self.obs_table)
@@ -42,9 +34,17 @@ class LNLAlgorithm:
                 is_correct, counter_example = self.teacher.equivalence_query(c_plus)
 
                 if is_correct:
-                    proposed_dfa = find_solution(self.obs_table, 
+                    proposed_dfa, (total_clauses_considered, max_clauses, total_conjectures_made) = find_solution(self.obs_table, 
                     self.get_s_plus(), 
-                    self.get_s_minus())
+                    self.get_s_minus(),
+                    max_dfa_size=max_dfa_size,
+                    show_logs=show_logs)
+
+                    self.num_calls += 1
+                    self.total_clauses += total_clauses_considered
+                    self.max_clauses = max(self.max_clauses, max_clauses)
+                    self.total_conjectures += total_conjectures_made
+
                     print("DFA Found and Validated Successfully!")
                     return proposed_dfa
                     # proposed_dfa.print_parameters()
@@ -55,12 +55,6 @@ class LNLAlgorithm:
             iterations += 1
         print("Tried so hard, and got so far, but in the end, it didnt even matter")
         return None
-    
-    def add_counter_example(self, word):
-        word_array = [""]
-        for char in word:
-            word_array.append(char)
-            self.obs_table.add_prefix(''.join(word_array))
 
 
     def make_initial_conjecture(self):
@@ -150,6 +144,10 @@ if __name__ == "__main__":
     lnl_algorithm = LNLAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
     solution_dfa = lnl_algorithm.run()
     solution_dfa.print_parameters()
+    print(lnl_algorithm.num_calls)
+    print(lnl_algorithm.total_clauses)
+    print(lnl_algorithm.max_clauses)
+    print(lnl_algorithm.total_conjectures)
     solution_dfa.visualize()
 
 

@@ -1,6 +1,7 @@
+from .smarter_teacher import SmarterTeacher
 from ..common.constants import _Const
 from ..dfa.dfa import DFA
-from .teacher import Teacher
+from .smarter_teacher import Teacher
 import random
 CONST = _Const()
 
@@ -8,7 +9,7 @@ CONST = _Const()
 this is to tell us the teacher is treated as a seperate entity 
 from the base algorithm, defines base actions of teacher
 '''
-class TestTeacher(Teacher):
+class TestTeacher(SmarterTeacher):
 
     def membership_query(self, test_word):
         zero_count = 0

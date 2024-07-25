@@ -3,54 +3,48 @@ Main points about glp algorithm:
 -> L* modified for weakly closed and weakly consistent criteria
 ->
 '''
+from ..algorithm import Algorithm
 from ..common.constants import _Const
-from ..common.observation_table import ObsTable
 from ..grinchtein_et_al.glp_utils import similar_row_exists_in_main_table, are_rows_similar, find_row_diff
 from ..common.conjecture_solver import find_solution
 # from ..common.conjecture_solver import find_solution_binary_search as find_solution
 # from ..common.alt_conjecture_solver import alt_find_solution as find_solution
-from ..teachers.teacher import Teacher
-from ..teachers.test_teacher import TestTeacher
 from ..teachers.test_teacher_complex import ComplexTeacher
 CONST = _Const()
 
-class GlpAlgorithm:
-    
-    '''
-    Initiates Algorithm object with observation table object in first step
-    '''
-    def __init__(self, alphabet, teacher: Teacher, prefix_set=None, suffix_set=None):
-        if prefix_set is None:
-            prefix_set =  [CONST.EMPTY]
-        if suffix_set is None:
-            suffix_set = [CONST.EMPTY]
-        self.teacher = teacher
-        self.obs_table = ObsTable(prefix_set, suffix_set, alphabet, teacher=teacher)
-        self.obs_table.populate_tables()
+class GlpAlgorithm(Algorithm):
 
-    def run(self, max_dfa_size=None):
+    def run(self, max_dfa_size=None, show_logs=False):
         iterations = 0
+
+        self.total_conjectures = 0
+        self.total_clauses = 0
+        self.max_clauses = 0
+
         while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
-            proposed_dfa = find_solution(self.obs_table, 
+            self.num_calls += 1
+            proposed_dfa, (total_clauses_considered, max_clauses, total_conjectures_made) = find_solution(self.obs_table, 
                     self.get_s_plus(), 
                     self.get_s_minus(),
-                    max_dfa_size=max_dfa_size)
+                    max_dfa_size=max_dfa_size,
+                    show_logs=show_logs)
+            
+            self.total_clauses += total_clauses_considered
+            self.max_clauses = max(self.max_clauses, max_clauses)
+            self.total_conjectures += total_conjectures_made
+
             is_correct, counter_example = self.teacher.equivalence_query(proposed_dfa)
             if is_correct:
                 print("DFA Found and Validated Successfully!")
+                print("num_calls: ", self.num_calls)
                 return proposed_dfa
             self.add_counter_example(counter_example)
 
             iterations += 1
+        print("num_calls: ", self.num_calls)
         print("Tried so hard, and got so far, but in the end, it didnt even matter")
         return None
-
-    def add_counter_example(self, word):
-        word_array = [""]
-        for char in word:
-            word_array.append(char)
-            self.obs_table.add_prefix(''.join(word_array))
 
 
     def make_initial_conjecture(self):
@@ -139,5 +133,10 @@ if __name__ == "__main__":
     glp_algorithm = GlpAlgorithm(alphabet=['0', '1'], teacher=ComplexTeacher())
     result = glp_algorithm.run()
     result.print_parameters()
+    print(glp_algorithm.num_calls)
+    print(glp_algorithm.total_clauses)
+    print(glp_algorithm.max_clauses)
+    print(glp_algorithm.total_conjectures)
+    result.visualize()
 
 

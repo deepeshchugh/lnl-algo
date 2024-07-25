@@ -40,10 +40,12 @@ class ComplexTeacher(Teacher):
         if counter_example is None and formal_counter_example is not None:
             print("ERROR ERROR Conflicting Example States")
             print("Formal counter:", formal_counter_example)
+            proposed_dfa.visualize()
             raise RuntimeError("Check for conflict")
         if counter_example is not None and formal_counter_example is None:
             print("ERROR ERROR Conflicting Example States case 2")
             print(counter_example)
+            proposed_dfa.visualize()
             raise RuntimeError("Check for conflict")
         if counter_example is None:
             return True, None
@@ -58,7 +60,7 @@ class ComplexTeacher(Teacher):
     
     def find_counterexample(self, proposed_dfa: DFA):
         itr = 0
-        while itr < CONST.MAX_ITERATION_COUNT:
+        while itr < CONST.MAX_COUNTEREXAMPLE_ATTEMPTS:
             random_word = self.get_random_word()
             if self.is_valid(random_word) is None:
                 itr += 1
@@ -67,7 +69,7 @@ class ComplexTeacher(Teacher):
                 self.is_valid(random_word):
                 return random_word
             itr += 1
-        print("couldn't find a counterexample so presuming solved")
+        # print("couldn't find a counterexample so presuming solved")
         return None
     
     def is_valid(self, test_word):

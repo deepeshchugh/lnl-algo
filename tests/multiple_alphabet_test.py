@@ -1,13 +1,13 @@
 from l_star_inexperienced.common.constants import _Const # type: ignore
 from l_star_inexperienced.dfa.dfa import DFA # type: ignore
-from l_star_inexperienced.teachers.teacher import Teacher # type: ignore
-from l_star_inexperienced.grinchtein_et_al.glp_algorithm import GlpAlgorithm # type: ignore
+from l_star_inexperienced.grinchtein_et_al.glp_algorithm import GlpAlgorithm
+from teachers.smarter_teacher import SmarterTeacher # type: ignore
 ITER_LIMIT = 1000
 
 import random
 CONST = _Const()
 
-class MultiAlphabetTeacher(Teacher):
+class MultiAlphabetTeacher(SmarterTeacher):
     
     def __init__(self):
         print("Initialized")
@@ -50,7 +50,7 @@ class MultiAlphabetTeacher(Teacher):
                 self.is_valid(random_word):
                 return random_word
             itr += 1
-        print("couldn't find a counterexample so presuming solved")
+        # print("couldn't find a counterexample so presuming solved")
         return None
     
     def is_valid(self, test_word):
@@ -77,5 +77,9 @@ class MultiAlphabetTeacher(Teacher):
         return ''.join(word_array)
         
 glp = GlpAlgorithm(alphabet=['a', 'b', 'c'], teacher=MultiAlphabetTeacher())
-glp.run()
-    
+result_dfa = glp.run(show_logs=True)
+result_dfa.visualize()
+print(glp.num_calls)
+print(glp.total_clauses)
+print(glp.max_clauses)
+print(glp.total_conjectures)

@@ -13,6 +13,7 @@ class ComplexTeacher(SmarterTeacher):
         self.count = 0
         self.initialize_accepting_fa()
         self.initialize_rejecting_fa()
+        self.alphabet = {'0', '1'}
     
     def membership_query(self, test_word):
         zero_count = 0
@@ -119,23 +120,15 @@ class ComplexTeacher(SmarterTeacher):
             return (False, "")
         state_pairs_checked.append((state_a, state_b))
         
-        isChainValid, transition_ce = self.dfs_check_a_subset_b(
-            fa_a=fa_a,
-            fa_b=fa_b,
-            state_a=fa_a.delta[state_a]['0'],
-            state_b=fa_b.delta[state_b]['0'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "0" + transition_ce)
-        
-        isChainValid, transition_ce = self.dfs_check_a_subset_b(
-            fa_a=fa_a,
-            fa_b=fa_b,
-            state_a=fa_a.delta[state_a]['1'],
-            state_b=fa_b.delta[state_b]['1'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "1" + transition_ce)
+        for char in self.alphabet:
+            isChainValid, transition_ce = self.dfs_check_a_subset_b(
+                fa_a=fa_a,
+                fa_b=fa_b,
+                state_a=fa_a.delta[state_a][char],
+                state_b=fa_b.delta[state_b][char],
+                state_pairs_checked=state_pairs_checked)
+            if not isChainValid:
+                return (False, char + transition_ce)
         return True, None
     
     def dfs_check_abar_subset_b(self, fa_a: DFA, fa_b: DFA, state_a, state_b, state_pairs_checked: list):

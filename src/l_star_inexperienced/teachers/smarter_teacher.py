@@ -1,3 +1,4 @@
+from .teacher import Teacher
 from ..common.constants import _Const
 from ..dfa.dfa import DFA
 CONST = _Const()
@@ -6,7 +7,7 @@ CONST = _Const()
 this is to tell us the teacher is treated as a seperate entity 
 from the base algorithm, defines base actions of teacher
 '''
-class SmarterTeacher:
+class SmarterTeacher(Teacher):
 
     def membership_query(self, test_word):
         return CONST.POS
