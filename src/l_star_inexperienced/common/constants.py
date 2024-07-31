@@ -33,5 +33,8 @@ class _Const(object):
     def MAX_ITERATION_COUNT():
         return 10
     @constant
+    def ALT_ITERATION_COUNT():
+        return 1000
+    @constant
     def MAX_COUNTEREXAMPLE_ATTEMPTS():
         return 10000

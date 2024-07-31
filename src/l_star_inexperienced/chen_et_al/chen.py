@@ -19,8 +19,8 @@ class ChenAlgorithm(Algorithm):
         while iterations < CONST.MAX_ITERATION_COUNT:
             self.make_initial_conjecture()
             tdfa = gen_3dfa(self.obs_table)
-            print("Three DFA:")
-            tdfa.print_parameters()
+            # print("Three DFA:")
+            # tdfa.print_parameters()
             c_plus = tdfa.get_c_plus()
             c_minus = tdfa.get_c_minus()
             counter_example = self.teacher.check_consistency(c_minus=c_minus, c_plus=c_plus)
@@ -59,8 +59,8 @@ class ChenAlgorithm(Algorithm):
                 self.obs_table.add_prefix(prefix_to_add)
             is_closed, prefix_to_add = self.is_obs_table_closed()
             is_consistent, suffix_to_add = self.is_obs_table_consistent()
-        print("conjecture:")
-        self.obs_table.print_table()
+        # print("conjecture:")
+        # self.obs_table.print_table()
 
     def get_s_plus(self):
         s_plus = set()

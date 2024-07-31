@@ -21,7 +21,7 @@ class GlpAlgorithm(Algorithm):
         self.total_clauses = 0
         self.max_clauses = 0
 
-        while iterations < CONST.MAX_ITERATION_COUNT:
+        while iterations < CONST.ALT_ITERATION_COUNT:
             self.make_initial_conjecture()
             self.num_calls += 1
             proposed_dfa, (total_clauses_considered, max_clauses, total_conjectures_made) = find_solution(self.obs_table, 

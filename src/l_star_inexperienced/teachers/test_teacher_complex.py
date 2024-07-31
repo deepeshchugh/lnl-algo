@@ -11,7 +11,7 @@ from the base algorithm, defines base actions of teacher
 class ComplexTeacher(Teacher):
     
     def __init__(self):
-        self.count = 0
+        self.alphabet = {'0', '1'}
         self.initialize_accepting_fa()
         self.initialize_rejecting_fa()
     
@@ -122,50 +122,33 @@ class ComplexTeacher(Teacher):
             return (False, "")
         state_pairs_checked.append((proposed_state, actual_state))
         
-        isChainValid, transition_ce = self.dfs_check_accepting(
-            proposed_fa=proposed_fa,
-            actual_fa=actual_fa,
-            proposed_state=proposed_fa.delta[proposed_state]['0'],
-            actual_state=actual_fa.delta[actual_state]['0'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "0" + transition_ce)
-        
-        isChainValid, transition_ce = self.dfs_check_accepting(
-            proposed_fa=proposed_fa,
-            actual_fa=actual_fa,
-            proposed_state=proposed_fa.delta[proposed_state]['1'],
-            actual_state=actual_fa.delta[actual_state]['1'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "1" + transition_ce)
+        for char in self.alphabet:
+            isChainValid, transition_ce = self.dfs_check_accepting(
+                proposed_fa=proposed_fa,
+                actual_fa=actual_fa,
+                proposed_state=proposed_fa.delta[proposed_state][char],
+                actual_state=actual_fa.delta[actual_state][char],
+                state_pairs_checked=state_pairs_checked)
+            if not isChainValid:
+                return (False, char + transition_ce)
         return True, None
     
     def dfs_check_rejecting(self, proposed_fa: DFA, actual_fa: DFA, proposed_state, actual_state, state_pairs_checked: list):
         if (proposed_state, actual_state) in state_pairs_checked:
             return (True, None)
         if actual_fa.is_state_final(actual_state) and proposed_fa.is_state_final(proposed_state):
-            print("we was here")
             return (False, "")
         state_pairs_checked.append((proposed_state, actual_state))
         
-        isChainValid, transition_ce = self.dfs_check_rejecting(
-            proposed_fa=proposed_fa,
-            actual_fa=actual_fa,
-            proposed_state=proposed_fa.delta[proposed_state]['0'],
-            actual_state=actual_fa.delta[actual_state]['0'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "0" + transition_ce)
-        
-        isChainValid, transition_ce = self.dfs_check_rejecting(
-            proposed_fa=proposed_fa,
-            actual_fa=actual_fa,
-            proposed_state=proposed_fa.delta[proposed_state]['1'],
-            actual_state=actual_fa.delta[actual_state]['1'],
-            state_pairs_checked=state_pairs_checked)
-        if not isChainValid:
-            return (False, "1" + transition_ce)
+        for char in self.alphabet:
+            isChainValid, transition_ce = self.dfs_check_rejecting(
+                proposed_fa=proposed_fa,
+                actual_fa=actual_fa,
+                proposed_state=proposed_fa.delta[proposed_state][char],
+                actual_state=actual_fa.delta[actual_state][char],
+                state_pairs_checked=state_pairs_checked)
+            if not isChainValid:
+                return (False, char + transition_ce)
         
         return True, None
     
