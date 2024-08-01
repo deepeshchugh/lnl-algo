@@ -206,7 +206,8 @@ def generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, solutio
                 break
         if CONST.EMPTY in state_to_word_map[i]:
             first_state = i
-
+    if first_state is None and num_states == 1:
+        first_state = 1
     return DFA(
         num_states=num_states,
         alphabet=obsTable.alphabet,
