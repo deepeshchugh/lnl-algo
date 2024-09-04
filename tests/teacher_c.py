@@ -271,11 +271,8 @@ class TeacherC(SmarterTeacher):
     
 if __name__ == '__main__':
     glp = LNLAlgorithm(alphabet=['a', 'b'], teacher=TeacherC())
-    # TeacherC().accepting_fa.visualize()
-    TeacherC().rejecting_fa.visualize()
 
     result_dfa = glp.run(show_logs=True)
-    # result_dfa.visualize()
     print(glp.num_calls)
     print(glp.total_clauses)
     print(glp.max_clauses)

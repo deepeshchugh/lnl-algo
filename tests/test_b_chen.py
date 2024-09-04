@@ -2,12 +2,6 @@ from teacher_b import TeacherB as Target
 teacher_name = "Teacher B"
 from l_star_inexperienced.chen_et_al.chen import ChenAlgorithm as TargetAlgo
 algo_name = "Chen"
-# glp = GlpAlgorithm(alphabet=['a', 'b', 'c'], teacher=TeacherD())
-# # TeacherC().accepting_fa.visualize()
-# # TeacherC().rejecting_fa.visualize()
-
-# result_dfa = glp.run(show_logs=True)
-# result_dfa.visualize()
 total_num_calls = 0
 total_clauses = 0
 total_max_clauses = 0
@@ -22,7 +16,6 @@ for i in range(100):
     algo = TargetAlgo(alphabet=['a', 'b', 'c'], teacher=Target())
 
     result_dfa = algo.run(show_logs=False)
-    # result_dfa.visualize()
 
     total_num_calls += algo.num_calls
     max_num_calls = max(max_num_calls, algo.num_calls)

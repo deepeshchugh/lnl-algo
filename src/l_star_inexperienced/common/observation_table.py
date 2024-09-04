@@ -67,7 +67,6 @@ class ObsTable:
     # Add suffix and regenerate the two tables.
     def add_suffix(self, suffix):
         if suffix in self.suffix_set:
-            #TODO add error here
             print("suffix already exists in obs table")
             return
         
@@ -91,8 +90,9 @@ class ObsTable:
 
 
 if __name__ == "__main__":
+    # Unit testing!
     observation_table = ObsTable(
-        prefix_set=[CONST.EMPTY, '0', '1'], 
+        prefix_set=[CONST.EMPTY], 
         suffix_set=[CONST.EMPTY], 
         alphabet=['0', '1'],
         teacher=TestTeacher())
@@ -101,3 +101,38 @@ if __name__ == "__main__":
     observation_table.add_prefix('00')
     observation_table.add_suffix('1')
     observation_table.print_table()
+
+    expected_prefix_set = ['', '00']
+    expected_suffix_set = ['', '1']
+    prefix_set = observation_table.prefix_set
+    suffix_set = observation_table.suffix_set
+    main_table = observation_table.main_table
+    failedTest = False
+
+    if len(set(expected_prefix_set).symmetric_difference(set(prefix_set))) > 0:
+        failedTest = True
+        print("prefix set does not match expected prefix set")
+        print("prefix set: ", prefix_set)
+
+    if len(set(expected_suffix_set).symmetric_difference(set(suffix_set))) > 0:
+        failedTest = True
+        print("suffix set does not match expected suffix set")
+        print("suffix set: ", suffix_set)
+    
+    for prefix in prefix_set:
+        for suffix in suffix_set:
+            for char in observation_table.alphabet:
+                if main_table[prefix + char][suffix] != observation_table.teacher.membership_query(prefix+char+suffix):
+                    print("Mismatch found in table entry for word: ", prefix+char+suffix)
+                    failedTest = True
+        if main_table[prefix][suffix] != observation_table.teacher.membership_query(prefix+suffix):
+                print("Mismatch found in table entry for word: ", prefix+suffix)
+                failedTest = True
+    if not failedTest:
+        print("All unit tests passed successfully")
+    else:
+        print("Atleast one unit test has failed, please check previous logs for details.")
+
+
+    
+    

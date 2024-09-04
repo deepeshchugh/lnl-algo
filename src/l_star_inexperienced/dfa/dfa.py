@@ -1,3 +1,4 @@
+from cgi import test
 from visual_automata.fa.dfa import VisualDFA
 
 class DFA:
@@ -34,6 +35,7 @@ class DFA:
     def is_state_final(self, state):
         return (state in self.final_states)
     
+    # Experimental
     def visualize(self):
         state_to_viz_map = {}
         states = []
@@ -61,3 +63,50 @@ class DFA:
         )
 
         visual_dfa.show_diagram(view=True)
+
+if __name__ == "__main__":
+    # Unit testing!
+    delta = {}
+    delta[1] = {'a':2,'b':3}
+    delta[2] = {'a':1,'b':4}
+    delta[3] = {'a':4,'b':1}
+    delta[4] = {'a':3,'b':2}
+
+    test_dfa = DFA(
+        num_states=4,
+        alphabet=['a', 'b'],
+        delta=delta,
+        final_states=set([1]),
+        first_state=1
+    )
+    
+    test_dfa.print_parameters()
+    failedTest = False
+
+    if not test_dfa.is_state_final(1):
+        print("Accepting state not verified")
+        failedTest = True
+
+    if not test_dfa.is_word_accepted(""):
+        print("Valid word rejected")
+        failedTest = True
+
+    returnedState =  test_dfa.get_state_for_word("aabbaa")
+    if not (returnedState == 1):
+        print("Expected state 1, got invalid state: ", returnedState )
+        failedTest = True
+
+    for i in range(2,5):
+        if test_dfa.is_state_final(i):
+            print("Rejecting state treated as Final :", i)
+            failedTest = True
+
+    if test_dfa.is_word_accepted("aba"):
+        print("invalid word accepted")
+        failedTest = True
+
+    if not failedTest:
+        print("All unit tests passed successfully")
+    else:
+        print("Atleast one unit test has failed, please check previous logs for details.")
+

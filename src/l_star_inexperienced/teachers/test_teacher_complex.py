@@ -33,8 +33,6 @@ class ComplexTeacher(Teacher):
             return CONST.DONT_CARE
         
     def equivalence_query(self, proposed_dfa: DFA):
-        # if self.check_dfa(proposed_dfa):
-        #     return True, None
         counter_example = self.find_counterexample(proposed_dfa=proposed_dfa)
         formal_counter_example = self.find_counterexample_formal(proposed_dfa=proposed_dfa)
         if counter_example is None and formal_counter_example is not None:

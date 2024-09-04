@@ -1,15 +1,9 @@
 from teacher_e import TeacherE as Target
 teacher_name = "Teacher E"
-# glp = GlpAlgorithm(alphabet=['a', 'b', 'c'], teacher=TeacherD())
-# # TeacherC().accepting_fa.visualize()
-# # TeacherC().rejecting_fa.visualize()
 teacher_list = []
 for i in range(100):
     new_teacher = Target()
     teacher_list.append(new_teacher)
-# result_dfa = glp.run(show_logs=True)
-# result_dfa.visualize()
-
 from l_star_inexperienced.grinchtein_et_al.glp_algorithm import GlpAlgorithm
 total_num_calls = 0
 total_clauses = 0
@@ -27,7 +21,6 @@ for i in range(100):
     algo = GlpAlgorithm(alphabet=['0','1'], teacher=teacher_list[i])
 
     result_dfa = algo.run(show_logs=True)
-    # result_dfa.visualize()
 
     total_num_calls += algo.num_calls
     max_num_calls = max(max_num_calls, algo.num_calls)
@@ -84,7 +77,6 @@ for i in range(100):
     algo = LNLAlgorithm(alphabet=['0','1'], teacher=teacher_list[i])
 
     result_dfa = algo.run(show_logs=False)
-    # result_dfa.visualize()
 
     total_num_calls += algo.num_calls
     max_num_calls = max(max_num_calls, algo.num_calls)
@@ -140,7 +132,6 @@ for i in range(100):
     algo = ChenAlgorithm(alphabet=['0','1'], teacher=teacher_list[i])
 
     result_dfa = algo.run(show_logs=False)
-    # result_dfa.visualize()
 
     total_num_calls += algo.num_calls
     max_num_calls = max(max_num_calls, algo.num_calls)

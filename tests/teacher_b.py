@@ -265,7 +265,6 @@ if __name__ == '__main__':
     glp = GlpAlgorithm(alphabet=['a', 'b'], teacher=TeacherB())
     result_dfa = glp.run(show_logs=True)
     result_dfa.visualize()
-    # TeacherB().rejecting_fa.visualize()
     print(glp.num_calls)
     print(glp.total_clauses)
     print(glp.max_clauses)

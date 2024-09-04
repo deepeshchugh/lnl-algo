@@ -298,14 +298,3 @@ class TeacherD(SmarterTeacher):
                 return (False, char + transition_ce)
         return True, None
     
-        
-glp = LNLAlgorithm(alphabet=['a', 'b', 'c'], teacher=TeacherD())
-# TeacherD().accepting_fa.visualize()
-TeacherD().rejecting_fa.visualize()
-
-# result_dfa = glp.run(show_logs=True)
-# # result_dfa.visualize()
-# print(glp.num_calls)
-# print(glp.total_clauses)
-# print(glp.max_clauses)
-# print(glp.total_conjectures)

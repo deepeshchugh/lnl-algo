@@ -264,7 +264,6 @@ class TeacherA(SmarterTeacher):
 if __name__ == '__main__':
     glp = GlpAlgorithm(alphabet=['a', 'b'], teacher=TeacherA())
     result_dfa = glp.run(show_logs=True)
-    # result_dfa.visualize()
     TeacherA().accepting_fa.visualize()
     print(glp.num_calls)
     print(glp.total_clauses)

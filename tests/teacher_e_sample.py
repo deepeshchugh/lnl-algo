@@ -16,7 +16,6 @@ class TeacherE(SmarterTeacher):
         self.initialize_rejecting_fa()
     
     def membership_query(self, test_word):
-        # print("here123")
         if self.accepting_fa.is_word_accepted(test_word):
             return CONST.POS
         elif self.rejecting_fa.is_word_accepted(test_word):
@@ -237,13 +236,4 @@ class TeacherE(SmarterTeacher):
         return True, None
     
         
-glp = LNLAlgorithm(alphabet=['0', '1'], teacher=TeacherE())
-# TeacherD().accepting_fa.visualize()
-# TeacherE().rejecting_fa.visualize()
 
-result_dfa = glp.run(show_logs=True)
-result_dfa.visualize()
-# print(glp.num_calls)
-# print(glp.total_clauses)
-# print(glp.max_clauses)
-# print(glp.total_conjectures)

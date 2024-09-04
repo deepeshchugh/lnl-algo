@@ -14,7 +14,7 @@ def gen_obs_table_row(prefix, suffix_set, teacher: Teacher):
         suffix_row[suffix] = teacher.membership_query(prefix + suffix)
     return suffix_row
 
-# TODO dummy function replace with teacher functionality
+#  dummy function that can replace teacher functionality
 def mem_query(string):
     if string == '':
         return CONST.POS

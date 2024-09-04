@@ -1,5 +1,3 @@
-# Todo add reject dfa gen
-#
 import random
 from l_star_inexperienced.dfa import DFA
 

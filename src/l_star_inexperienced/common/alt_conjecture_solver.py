@@ -18,7 +18,6 @@ CONST = _Const()
 Primary external function of this module
 i/p: Observation Table, S Plus Set, S Minus Set
 o/p: Minimal DFA Object matching constraint
-TODO Make DFA Class and corresponding encoding conversion
 '''
 def alt_find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_size = None, show_logs = False):
     if max_dfa_size is None:
@@ -46,7 +45,7 @@ def alt_find_solution(obsTable: ObsTable, s_plus: set, s_minus: set, max_dfa_siz
 '''
 One iteration of sat solver
 takes i/p: obsTable, s plus set, s minus set, number of states
-o/p: foundDFA: boolean, DFA TODO
+o/p: foundDFA: boolean, DFA 
 Adds clauses according to the four constraints provided in glp sat based approach
 '''
 def alt_find_dfa_with_size(obsTable: ObsTable, s_plus: set, s_minus: set, num_states):
@@ -139,7 +138,6 @@ def alt_generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, sol
     delta = {}
     for i in range(1, num_states+1):
         delta[i] = {}
-        # Todo add checks
         for letter in obsTable.alphabet:
             transition_found = False
             for word in state_to_word_map[i]:
@@ -148,7 +146,6 @@ def alt_generate_dfa(num_states, obsTable: ObsTable, s_plus, item_state_map, sol
                     transition_found = True
                     break
             if not transition_found:
-                # Adding a self pointer for now, TODO check actual solution with prof
                 delta[i][letter] = i
             
 

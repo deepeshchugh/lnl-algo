@@ -2,12 +2,6 @@ from teacher_a import TeacherA as Target
 teacher_name = "Teacher A"
 from l_star_inexperienced.grinchtein_et_al.glp_algorithm import GlpAlgorithm
 
-# glp = GlpAlgorithm(alphabet=['a', 'b', 'c'], teacher=TeacherD())
-# # TeacherC().accepting_fa.visualize()
-# # TeacherC().rejecting_fa.visualize()
-
-# result_dfa = glp.run(show_logs=True)
-# result_dfa.visualize()
 total_num_calls = 0
 total_clauses = 0
 total_max_clauses = 0
@@ -22,7 +16,6 @@ for i in range(100):
     glp = GlpAlgorithm(alphabet=['a', 'b', 'c'], teacher=Target())
 
     result_dfa = glp.run(show_logs=False)
-    # result_dfa.visualize()
 
     total_num_calls += glp.num_calls
     max_num_calls = max(max_num_calls, glp.num_calls)
